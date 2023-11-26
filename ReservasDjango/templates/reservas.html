@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body class="container mt-5">
+    <div class="alert alert-info display-1 text-center">LISTADO DE PROYECTOS</div>
+
+    {% if proyecto %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Termino</th>
+                <th>Responsable</th>
+                <th>Prioridad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pro in proyecto %}
+            <tr>
+                <td>{{pro.nombre}}</td>
+                <td>{{pro.fechaInicio}}</td>
+                <td>{{pro.fechaTermino}}</td>
+                <td>{{pro.responsable}}</td>
+                <td>{{pro.prioridad}}</td>    
+                <td> <a href="actualizar/{{pro.id}}" class="btn btn-succes btn-sm"> <i class="bi bi-pencil-square"></i> </a> </td>
+                <td> <a href="eliminar/{{pro.id}}" class="btn btn-danger btn-sm"> <i class="bi bi-trash"></i> </a> </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+        <div class="alert alert-danger text-center">
+            No se encuentran proyectos en el sistema
+        </div>
+    {% endif %}
+
+    <a href="/" class="btn btn-danger">VOLVER</a>
+    <a href="/agregar" class="btn btn-danger">agregar proyecto</a>
+   
+</body>
+</html>
