@@ -11,11 +11,19 @@ class FormReserva(forms.ModelForm):
 
     fechaReserva = forms.DateField(widget=forms.SelectDateWidget())
     estado = forms.CharField(widget=forms.Select(choices=ESTADOS))
+    nombrePersona = forms.CharField()
 
-    estado.widget.attrs['class'] = 'form-select'
 
-    def clean_numeroPersonas(self):
+    def filterByCantidadPersonas(self):
         inputCantidadPersons = self.cleaned_data['numeroPersonas']
         if inputCantidadPersons < 1 or inputCantidadPersons > 15:
             raise forms.ValidationError("El numero de personas no es el esperado...")
         return inputCantidadPersons
+    
+    def filterByNombrePersonas(self):
+        inputnombrePersona = self.cleaned_data['nombrePersona']
+        if len(inputnombrePersona) > 80:
+            raise forms.ValidationError("El nombre excede el maximo")
+        return inputnombrePersona
+    
+    estado.widget.attrs['class'] = 'form-select'
