@@ -1,18 +1,53 @@
 from django.shortcuts import render, redirect
-from django import forms
-from ReservaDjandoApp.forms import reservaForms
+from django.contrib import messages
+from ReservaDjandoApp.forms import FormReserva
+from ReservaDjandoApp.models import Reserva
 
 # Create your views here.
 
 def index(request):
     return render(request, 'index.html')
 
-
-def filterNumPerson (request):
+def listarReservas (request):
     
-    numPersons = request.POST.get('numeroPersonas')
+    reservas = Reserva.objects.all()
+    data = {'reservas': reservas}
+    return render(request, 'reservas.html', data )
 
-    if(numPersons <1 or numPersons >15):
-        return render(request, 'mi_template.html', {'error_message': "El número de personas debe estar entre 1 y 15"})
+def agregarReserva (request):
+    form = FormReserva()
 
-    return numPersons
+    if(request.method == 'POST'):
+        form = FormReserva(request.POST)
+        if(form.is_valid()):
+            messages.success(request, 'La reserva se ha agregado correctamente.')            
+            form.save()
+            return index(request)
+        else:
+            for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f'Error en el campo {field}: {error}')
+    
+    data = { 'form' : form}
+    return render(request, 'agregar.html', data)
+
+def eliminarReserva (request, id_req):
+    
+    reserva = Reserva.objects.get(idReserva = id_req)
+    reserva.delete()
+
+    return redirect('/reservas')
+
+def modificarReserva (request, id_req):
+    
+    reserva = Reserva.objects.get(idReserva = id_req)    
+    form = FormReserva(instance=reserva)
+
+    if(request.method == 'POST'):
+        form = FormReserva(request.POST, instance = reserva)
+        if(form.is_valid()):
+            form.save()
+            return index(request)
+
+    data = { 'form' : form}
+    return render(request, 'agregar.html', data)
